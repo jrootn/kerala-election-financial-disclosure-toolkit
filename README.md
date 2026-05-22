@@ -1,28 +1,35 @@
 # Kerala Election Financial Disclosure Toolkit
 
-Research tooling for collecting, parsing, and analyzing Kerala Assembly election candidate affidavit disclosures from MyNeta/ADR.
+A public-interest research toolkit for collecting, parsing, and analyzing Kerala Assembly election candidate affidavit disclosures from MyNeta/ADR.
 
-This repository is designed as a **public-interest research toolkit**, not as a redistributed dataset. It intentionally excludes raw HTML, scraped CSVs, logs, local caches, and environment files from version control.
+The project helps researchers build reproducible financial-disclosure analysis from election affidavits: asset and liability trends, repeat-candidate growth, income-to-asset mismatch, and manual-review rankings. It is designed to publish **methodology and code**, not to redistribute a bulk copy of the source database.
 
-## What This Project Does
+## Why This Exists
 
-The pipeline supports a reproducible workflow:
+Election affidavits are one of the few structured public records that let citizens compare candidate finances over time. This toolkit turns those disclosures into auditable research tables and triage reports so journalists, students, civic technologists, and curious citizens can ask better follow-up questions.
+
+The output should be read as a **manual review queue**. A high score means "look here first," not "this person did something illegal."
+
+## What The Pipeline Does
 
 1. Collect candidate profile links from MyNeta Kerala election pages.
 2. Cache candidate profile HTML locally with conservative request settings.
 3. Parse declared assets, liabilities, income, criminal-case counts, education, profession, PAN status, and source URLs.
 4. Combine election years into a normalized research table.
-5. Generate financial-disclosure anomaly rankings and charts for manual review.
-6. Produce a LaTeX research note that frames results as open questions, not legal conclusions.
+5. Match repeat candidates and calculate asset growth/CAGR.
+6. Generate financial-disclosure anomaly rankings and charts for manual review.
+7. Produce a LaTeX research note that frames findings as open questions.
 
-## What This Project Does Not Do
+## Scope And Limitations
 
-- It does not prove corruption or illegality.
-- It does not redistribute the full MyNeta/ADR database.
+This project is a research aid, not an investigative finding.
+
+- It does not prove corruption, fraud, or illegality.
 - It does not include raw scraped HTML or full candidate-level CSV outputs in Git.
 - It does not bypass rate limits, authentication, CAPTCHAs, or access controls.
+- It depends on the accuracy of public affidavits, parser logic, and repeat-candidate matching.
 
-All findings should be checked against original affidavits, Election Commission records, court documents, company filings, land records, and other primary sources before being cited as evidence.
+Any substantive claim should be checked against original affidavits, Election Commission records, court documents, company filings, land records, and other primary sources.
 
 ## Repository Contents
 
@@ -31,7 +38,7 @@ myneta_pipeline.py                 # crawl, cache, parse, combine, basic flags
 analyze_financials.py              # clean dataset, repeat matching, initial flags
 deep_financial_analysis.py         # richer scoring, rankings, charts
 scripts/run_kerala_background.sh   # long-run helper
-data/analysis/paper/*.tex          # research-paper source, no bundled data required
+paper/kerala_financial_disclosure_anomalies.tex
 requirements.txt
 DATA_NOTICE.md
 ETHICS.md
@@ -69,11 +76,11 @@ python myneta_pipeline.py parse --year 2026
 python analyze_financials.py --years 2026
 ```
 
-The generated files will appear under `data/`, which is ignored by Git.
+Generated files appear under `data/`, which is ignored by Git.
 
 ## Full Local Workflow
 
-Run this only if you have reviewed the source site's terms and are comfortable that your use is permitted.
+Run this only after reviewing the source site's terms and deciding that your use is permitted.
 
 ```bash
 python myneta_pipeline.py crawl --year 2026 --delay-min 2 --delay-max 4
@@ -89,9 +96,9 @@ python analyze_financials.py --years 2016 2021 2026
 python deep_financial_analysis.py
 ```
 
-## Analysis Philosophy
+## Analysis Model
 
-The scoring model is a triage tool. It prioritizes manual review using signals such as:
+The scoring model prioritizes manual review using signals such as:
 
 - year-relative asset percentile;
 - absolute declared assets;
@@ -101,21 +108,21 @@ The scoring model is a triage tool. It prioritizes manual review using signals s
 - criminal-case count;
 - PAN and missing-data signals.
 
-These signals are not accusations. They are prompts for document-based research.
+These signals are prompts for document-based research. They are not accusations.
 
 ## Research Paper
 
-The paper source is available at:
+The LaTeX source is available at:
 
 ```text
-data/analysis/paper/kerala_financial_disclosure_anomalies.tex
+paper/kerala_financial_disclosure_anomalies.tex
 ```
 
-The LaTeX file uses PGFPlots/TikZ charts directly, so it can be pasted into Overleaf without uploading generated chart images.
+The paper uses PGFPlots/TikZ charts directly, so it can be pasted into Overleaf without uploading generated chart images.
 
-## Responsible Use
+## Responsible Sharing
 
-MyNeta/ADR and Election Commission affidavit data are public-interest resources. Respect source terms, cite sources, and avoid redistributing bulk scraped data without permission.
+MyNeta/ADR and Election Commission affidavit data are public-interest resources. Please respect source terms, cite sources, and avoid redistributing bulk scraped data without permission.
 
 Recommended public-sharing approach:
 
